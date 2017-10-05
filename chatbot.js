@@ -885,6 +885,7 @@ function cacheMessage(message, index = null)
     message = message.replace("@dindon ", "");
     message = replaceAll(message, "\\n", "");
     message = replaceAll(message, "\\t", "");
+    message = message.replace(/\s\s+/g, " ").trim();
     var messages = getMessagesFromCache();
 
     if (messages == null)
