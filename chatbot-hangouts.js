@@ -3,34 +3,9 @@
 //======================================================
 
 
-// Chargement des scripts externes
-var jQueryScript = document.createElement('script');
-jQueryScript.src = "https://code.jquery.com/jquery-3.4.0.min.js";
-
 var googleApiScript = document.createElement('script');
 googleApiScript.src = "https://apis.google.com/js/client.js?onload=init";
 document.getElementsByTagName('head')[0].appendChild(googleApiScript);
-
-// Attend que jQuery soit chargé pour démarrer le bot
-jQueryScript.onload = function()
-{
-    // Mémorise le dernier message de la conversation pour que le bot
-    // n'envoie pas de message dès l'activation
-    lastMessage = jQuery(messagesSelector).last().text();
-
-    // Ouvre la liste des participants de la conversation
-    jQuery(showParticipantsListSelector).click();
-
-    setTimeout(function()
-    {
-        // Puis la referme
-        jQuery(cancelParticipantsListSelector).click();
-    }, 2000);
-
-    bot.start();
-}
-
-document.getElementsByTagName('head')[0].appendChild(jQueryScript);
 
 // Dernier message de la conversation
 var lastMessage = "";
@@ -238,8 +213,8 @@ Bot.prototype = {
         if (!that.active)
             return;
 
-        var $messages = jQuery(messagesSelector);
-        var message = $messages.last().text();
+        var messages = document.querySelectorAll(messagesSelector);
+        message = messages[messages.length - 1].innerText;
 
         if (message != lastMessage)
         {
@@ -266,13 +241,14 @@ Bot.prototype = {
 
                     if (!that.standby)
                     {
-                        var sender = jQuery(participantsSelector).last().text();
+                        var participants = document.querySelectorAll(participantsSelector);
+                        var sender = participants[participants.length - 1].innerText;
 
                         // Stocke les 3 messages précédant le message actuel
                         var contextMessages = [
-                            $messages[$messages.length - 2].innerHTML,
-                            $messages[$messages.length - 3].innerHTML,
-                            $messages[$messages.length - 4].innerHTML
+                            messages[messages.length - 2].innerHTML,
+                            messages[messages.length - 3].innerHTML,
+                            messages[messages.length - 4].innerHTML
                         ];
 
                         callbacks.forEach(function(callback)
@@ -302,12 +278,12 @@ Bot.prototype = {
     sendMessage: function(message)
     {
         var that = this;
-        jQuery(messageInputSelector).text(message);
-that.answered = true;
+        document.querySelector(messageInputSelector).innerText = message;
+        that.answered = true;
 
         setTimeout(function()
         {
-            jQuery(sendButtonSelector).click();
+            document.querySelector(sendButtonSelector).click();
             // console.log(message);
             lastMessage = message;
         }, 3000);
@@ -478,7 +454,7 @@ that.answered = true;
         var random = getRandomInt(1, 100);
 
         var canSpeak = (that.options.discuss
-            && jQuery(messagesSelector).last().closest('.pj').length == 0
+            && getLastMessageElement().closest('.pj') == null
             && (random <= that.options.discussionProbability || message.indexOf("@bot ") === 0))
 
         if (!canSpeak)
@@ -851,9 +827,10 @@ function cacheMessage(message, index = null)
 */
 function cacheAllMessages()
 {
-    jQuery(messagesSelector).each(function(i, e) {
-        cacheMessage(jQuery(e).text());
-    });
+    // TODO: remplacer jQuery par du JS
+    // jQuery(messagesSelector).each(function(i, e) {
+    //     cacheMessage(jQuery(e).text());
+    // });
 }
 
 /**
@@ -865,6 +842,18 @@ function getMessagesFromCache()
     return JSON.parse(localStorage.getItem("messages"));
 }
 
+function getLastMessage()
+{
+    var messages = document.querySelectorAll(messagesSelector);
+    return messages[messages.length - 1].innerText;
+}
+
+function getLastMessageElement()
+{
+    var messages = document.querySelectorAll(messagesSelector);
+    return messages[messages.length - 1];
+}
+
 /**
 * Retoure la liste des participants de la conversation.
 * @return {array} tableau contenant les participants.
@@ -873,15 +862,16 @@ function getParticipants()
 {
     var participants = [];
 
-    jQuery(participantsSelector).each(function(index, element)
+    document.querySelectorAll(participantsSelector).forEach(function(element, index)
     {
         // Récupère seulement le prénom
-        var participant = jQuery(element).text().split(" ")[0];
+        var participant = element.innerText.split(" ")[0];
+        participants.push(participant);
 
-        if (jQuery.inArray(participant, participants) == -1)
-        {
-            participants.push(participant);
-        }
+        // if (jQuery.inArray(participant, participants) == -1)
+        // {
+        //     participants.push(participant);
+        // }
     });
 
     return participants;
@@ -1028,3 +1018,17 @@ function replaceAll(str, find, replace) {
 
 // messages = JSON.parse('');
 // localStorage.messages = JSON.stringify(messages);
+
+// n'envoie pas de message dès l'activation
+lastMessage = getLastMessage();
+
+// Ouvre la liste des participants de la conversation
+document.querySelector(showParticipantsListSelector).click();
+
+setTimeout(function()
+{
+    // Puis la referme
+    document.querySelector(cancelParticipantsListSelector).click();
+}, 2000);
+
+bot.start();
