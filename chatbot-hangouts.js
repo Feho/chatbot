@@ -817,7 +817,7 @@ function cacheMessage(message, index = null)
         messages[index] = message;
     }
 
-    localStorage.setItem("messages", JSON.stringify(messages));
+    localStorage.setItem("messagesIrcem", JSON.stringify(messages));
     bot.secondsSinceLastMessage = 0;
 }
 
@@ -827,10 +827,10 @@ function cacheMessage(message, index = null)
 */
 function cacheAllMessages()
 {
-    // TODO: remplacer jQuery par du JS
-    // jQuery(messagesSelector).each(function(i, e) {
-    //     cacheMessage(jQuery(e).text());
-    // });
+    document.querySelectorAll(messagesSelector).forEach(function(msg, index)
+    {
+        cacheMessage(msg.innerText);
+    });
 }
 
 /**
@@ -839,7 +839,7 @@ function cacheAllMessages()
 */
 function getMessagesFromCache()
 {
-    return JSON.parse(localStorage.getItem("messages"));
+    return JSON.parse(localStorage.getItem("messagesIrcem"));
 }
 
 function getLastMessage()
