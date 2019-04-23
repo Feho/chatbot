@@ -37,15 +37,16 @@ var restaurants = {
         "Au MacDo",
         "À Subway",
         "À SoGood",
-        "À Pomme de Pain"
+        "À Pomme de Pain",
+        "On mange pas."
     ]
 };
 
 /**
-* Constructeur du bot.
-*
-* @param {Object} options Contient les paramètres du bot.
-*/
+ * Constructeur du bot.
+ *
+ * @param {Object} options Contient les paramètres du bot.
+ */
 function Bot(options)
 {
     this.options = options;
@@ -56,11 +57,14 @@ function Bot(options)
     this.lastAnswer = null;
     this.messageBeforeAnswer = null;
     this.secondsSinceLastMessage = 0;
+    this.hasAskedAQuestion = false;
     this.commands = [
         { commandText: "-r ", method: this.replaceLastAnswer.bind(this) },
         { commandText: "-a ", method: this.addAnswer.bind(this) },
         { commandText: "@bot sleep", method: this.sleep.bind(this) },
-        { commandText: "@bot wake up", method: this.wakeUp.bind(this) }
+        { commandText: "@dindon sleep", method: this.sleep.bind(this) },
+        { commandText: "@bot wake up", method: this.wakeUp.bind(this) },
+        { commandText: "@dindon wake up", method: this.wakeUp.bind(this) }
     ];
 }
 
@@ -81,7 +85,7 @@ Bot.prototype = {
             //this.estCeQueCEstBientot.bind(this),
             this.taunt.bind(this),
             this.discuss.bind(this),
-            this.AnswerYesNo.bind(this),
+            this.answerYesNo.bind(this),
             this.search.bind(this),
             this.repeatLastWord.bind(this)
         ]
@@ -106,7 +110,7 @@ Bot.prototype = {
     sleep: function()
     {
         this.standby = true;
-        var message = "Bot is now sleeping...";
+        var message = "Bonne nuit !";
         console.log(message);
         this.sendMessage(message);
     },
@@ -117,7 +121,7 @@ Bot.prototype = {
     wakeUp: function()
     {
         this.standby = false;
-        var message = "Bot is awake !";
+        var message = "Coucou !";
         console.log(message);
         this.sendMessage(message);
     },
@@ -139,62 +143,62 @@ Bot.prototype = {
 
         if (!that.standby)
         {
-        if (that.secondsSinceLastMessage > that.options.autoPostMessageAfterInactivity)
-        {
-            that.secondsSinceLastMessage = 0;
-            var random = getRandomInt(0, 4);
-
-            if (random == 0 && !lastMessage.endsWith("?"))
+            if (that.secondsSinceLastMessage > that.options.autoPostMessageAfterInactivity)
             {
-                // Recherche d'un message sans lien avec le dernier message pour relancer la conversation
-                var regExpressions = [
-                    new RegExp(/^Vous .+$/i),
-                    new RegExp(/^(Et )?au fait.*$/i),
-                    new RegExp(/([^a-z]mick[^a-z]|[^a-z]rom[^a-z]|romain|[^a-z]myk[^a-z]|mykeul|flo[^a-z]|florian)/i),
-                    new RegExp(/^(qui|c'est qui) .+\?$/i),
-                    new RegExp(/^(tain|tin|ptin|ptain|putain|putin) .+$/i),
-                    new RegExp(/^Alors .+\?$/i),
-                    new RegExp(/^Comment .+\?$/i)
-                ]
+                that.secondsSinceLastMessage = 0;
+                var random = getRandomInt(0, 4);
 
-                var messagesIndexes = [];
-
-                messages.forEach(function(message, index)
+                if (random == 0 && !lastMessage.endsWith("?"))
                 {
-                    for (var i = 0; i < regExpressions.length; i++)
+                    // Recherche d'un message sans lien avec le dernier message pour relancer la conversation
+                    var regExpressions = [
+                        new RegExp(/^Vous .+$/i),
+                        new RegExp(/^(Et )?au fait.*$/i),
+                        new RegExp(/([^a-z]mick[^a-z]|[^a-z]rom[^a-z]|romain|[^a-z]myk[^a-z]|mykeul|flo[^a-z]|florian)/i),
+                        new RegExp(/^(qui|c'est qui) .+\?$/i),
+                        new RegExp(/^(tain|tin|ptin|ptain|putain|putin) .+$/i),
+                        new RegExp(/^Alors .+\?$/i),
+                        new RegExp(/^Comment .+\?$/i)
+                    ];
+
+                    var messagesIndexes = [];
+
+                    messages.forEach(function(message, index)
                     {
-                        if (regExpressions[i].test(message))
+                        for (var i = 0; i < regExpressions.length; i++)
                         {
-                            messagesIndexes.push(index);
+                            if (regExpressions[i].test(message))
+                            {
+                                messagesIndexes.push(index);
 
-                            break;
+                                break;
+                            }
                         }
-                    }
-                });
+                    });
 
-                if (messagesIndexes.length > 0)
+                    if (messagesIndexes.length > 0)
+                    {
+                        var random = getRandomInt(0, messagesIndexes.length - 1);
+                        that.sendMessage(messages[messagesIndexes[random]]);
+                        cacheMessage(messages[messagesIndexes[random]]);
+                    }
+                }
+                else
                 {
-                    var random = getRandomInt(0, messagesIndexes.length - 1);
-                    that.sendMessage(messages[messagesIndexes[random]]);
-                    cacheMessage(messages[messagesIndexes[random]]);
+                    // Stocke les 3 messages précédant le dernier message
+                    var contextMessages = [
+                        messages[messages.length - 2],
+                        messages[messages.length - 3],
+                        messages[messages.length - 4]
+                    ];
+
+                    // Le bot va tenter une réponse cohérente
+                    var oldDiscussionProbability = that.options.discussionProbability;
+                    that.options.discussionProbability = 100;
+                    that.discuss(lastMessage, contextMessages);
+                    that.options.discussionProbability = oldDiscussionProbability;
                 }
             }
-            else
-            {
-                // Stocke les 3 messages précédant le dernier message
-                var contextMessages = [
-                    messages[messages.length - 2],
-                    messages[messages.length - 3],
-                    messages[messages.length - 4]
-                ];
-
-                // Le bot va tenter une réponse cohérente
-                var oldDiscussionProbability = that.options.discussionProbability;
-                that.options.discussionProbability = 100;
-                that.discuss(lastMessage, contextMessages);
-                that.options.discussionProbability = oldDiscussionProbability;
-            }
-        }
         }
 
         that.secondsSinceLastMessage++;
@@ -261,7 +265,6 @@ Bot.prototype = {
                     }
                 }
             }
-
         }
 
         setTimeout(function()
@@ -278,6 +281,7 @@ Bot.prototype = {
     sendMessage: function(message)
     {
         var that = this;
+        var randomMilliseconds = getRandomInt(2000, 3500);
         document.querySelector(messageInputSelector).innerText = message;
         that.answered = true;
 
@@ -286,7 +290,12 @@ Bot.prototype = {
             document.querySelector(sendButtonSelector).click();
             // console.log(message);
             lastMessage = message;
-        }, 3000);
+
+            if (message.indexOf("?") !== -1)
+            {
+                that.hasAskedAQuestion = true;
+            }
+        }, randomMilliseconds);
     },
 
     repeatLastWord: function(message)
@@ -311,6 +320,9 @@ Bot.prototype = {
         }
     },
 
+    /**
+     * Effectue une recherche sur Google et envoie le premier lien trouvé.
+     */
     search: function(message)
     {
         var that = this;
@@ -333,9 +345,11 @@ Bot.prototype = {
                 that.sendMessage("Je ne sais pas");
             });
         }
-
     },
 
+    /**
+     * Répond à une question du style "C'est qui le... ?" par le nom d'un participant aléatoire.
+     */
     whoIs: function(message)
     {
         var that = this;
@@ -357,6 +371,9 @@ Bot.prototype = {
         }
     },
 
+    /**
+     * Répond à une question du style "On mange où ?" par le nom d'un restaurant aléatoire.
+     */
     whereDoWeEat: function(message)
     {
         var that = this;
@@ -395,7 +412,10 @@ Bot.prototype = {
         }
     },
 
-    AnswerYesNo: function(message)
+    /**
+     * Répond à une question du style "Est-ce que ... ?" par une réponse positive ou négative.
+     */
+    answerYesNo: function(message)
     {
         var that = this;
         var pattern = /est(-| )ce qu/i
@@ -405,6 +425,12 @@ Bot.prototype = {
         {
             var answers = [
                 "Oui",
+                "Oui",
+                "Oui",
+                "Oui",
+                "Non",
+                "Non",
+                "Non",
                 "Non",
                 "Bien sûr",
                 "Bah non",
@@ -423,6 +449,12 @@ Bot.prototype = {
                 "Certainement",
                 "Certainement pas",
                 "Ouais",
+                "Ouais",
+                "Ouais",
+                "Ouais",
+                "Nan",
+                "Nan",
+                "Nan",
                 "Nan",
                 "Yes",
                 "No"
@@ -434,6 +466,34 @@ Bot.prototype = {
         }
     },
 
+    /**
+     * Signale le moment de prendre une pause.
+     */
+    sayPause: function()
+    {
+        var that = this;
+
+        if (!that.active)
+            return;
+
+        if (!that.standby)
+        {
+            var dateTimeNow = new Date();
+            var minutes = dateTimeNow.getMinutes();
+
+            if (dateTimeNow.getHours() == 15 && 25 <= minutes && minutes < 40)
+            {
+                that.sendMessage("Pause ?");
+                cacheMessage("Pause ?");
+            }
+        }
+
+        setTimeout(that.sayPause.bind(that), 900000);
+    },
+
+    /**
+     * Effectue un choix entre 2 mots (sans espaces, ex: "mot1 ou mot2 ?").
+     */
     thisOrThat: function(message)
     {
         var that = this;
@@ -448,6 +508,9 @@ Bot.prototype = {
         }
     },
 
+    /**
+     * Permet de répondre au dernier message en fonction du contexte.
+     */
     discuss: function(message, contextMessages)
     {
         var that = this;
@@ -455,7 +518,8 @@ Bot.prototype = {
 
         var canSpeak = (that.options.discuss
             && getLastMessageElement().closest('.pj') == null
-            && (random <= that.options.discussionProbability || message.indexOf("@bot ") === 0))
+            && (random <= that.options.discussionProbability || message.indexOf("@bot ") === 0
+                || message.indexOf("@dindon ") === 0))
 
         if (!canSpeak)
         {
@@ -508,9 +572,10 @@ Bot.prototype = {
             }
         }
 
-        random = getRandomInt(1, 5)
+        random = getRandomInt(1, 3)
 
-        if (answersIndexes.length === 0 && (random == 1 || message.indexOf("@bot ") === 0))
+        if (answersIndexes.length === 0 && (random == 1 || message.indexOf("@bot ") === 0
+            || message.indexOf("@dindon ") === 0))
         {
             // Aucune réponse trouvée, recherche d'une réponse probable de temps en temps :)
             console.log("Recherche d'un message similaire...");
@@ -747,7 +812,8 @@ var bot = new Bot({
     randomRepeatLastWord: true,
     repetitionProbability: 1,
     discuss: true,
-    discussionProbability: 5,
+    // Probabilité en % de réponse aux messages.
+    discussionProbability: 10,
     proposeSuggestions: false,
     autoPostMessageAfterInactivity: 43200
 });
@@ -783,12 +849,12 @@ function init() {
 }
 
 /**
-* Sauvegarge le message spécifié dans le localStorage.
-* @param  {string} message
-* @param {int} index - spécifie à quel index du tableau le message doit être sauvegardé
-*                        (permet de modifier un message).
-* @return {void}
-*/
+ * Sauvegarge le message spécifié dans le localStorage.
+ * @param  {string} message
+ * @param {int} index - spécifie à quel index du tableau le message doit être sauvegardé
+ *                        (permet de modifier un message).
+ * @return {void}
+ */
 function cacheMessage(message, index = null)
 {
     // debugger;
@@ -801,6 +867,10 @@ function cacheMessage(message, index = null)
     }
 
     message = message.replace("@bot ", "");
+    message = message.replace("@dindon ", "");
+    message = replaceAll(message, "\\n", "");
+    message = replaceAll(message, "\\t", "");
+    message = message.replace(/\s\s+/g, " ").trim();
     var messages = getMessagesFromCache();
 
     if (messages == null)
@@ -822,9 +892,9 @@ function cacheMessage(message, index = null)
 }
 
 /**
-* Sauvegarde tous les messages visibles de la conversation dans le localStorage.
-* @return {void}
-*/
+ * Sauvegarde tous les messages visibles de la conversation dans le localStorage.
+ * @return {void}
+ */
 function cacheAllMessages()
 {
     document.querySelectorAll(messagesSelector).forEach(function(msg, index)
@@ -834,9 +904,9 @@ function cacheAllMessages()
 }
 
 /**
-* Retourne les messages de la conversation enregistrés en cache.
-* @return {array} tableau contenant les messages
-*/
+ * Retourne les messages de la conversation enregistrés en cache.
+ * @return {array} tableau contenant les messages
+ */
 function getMessagesFromCache()
 {
     return JSON.parse(localStorage.getItem("messagesIrcem"));
@@ -855,9 +925,9 @@ function getLastMessageElement()
 }
 
 /**
-* Retoure la liste des participants de la conversation.
-* @return {array} tableau contenant les participants.
-*/
+ * Retoure la liste des participants de la conversation.
+ * @return {array} tableau contenant les participants.
+ */
 function getParticipants()
 {
     var participants = [];
