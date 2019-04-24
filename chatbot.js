@@ -450,12 +450,12 @@ Bot.prototype = {
     },
 
     /**
-     * Répond à une question du style "Est-ce que ... ?" par une réponse positive ou négative.
+     * Répond à une question du style "Est-ce que ... ? / Veux-tu" par une réponse positive ou négative.
      */
     answerYesNo: function(message)
     {
         var that = this;
-        var pattern = /est(-| )ce qu/i
+        var pattern = /est(-| )ce qu|veux(-| )tu/i
         var regex = new RegExp(pattern);
 
         if (regex.test(message))
@@ -480,6 +480,7 @@ Bot.prototype = {
                 "Euh non",
                 "Je sais pas ^^",
                 "Probablement",
+                "Absoluement",
                 "J'crois pas non",
                 "Évidemment",
                 "Probablement pas",
@@ -494,7 +495,9 @@ Bot.prototype = {
                 "Nan",
                 "Nan",
                 "Yes",
-                "No"
+                "No",
+                "Et ta soeur ?",
+                "Tu suces ?"
             ];
 
             var random = getRandomInt(0, answers.length - 1);
