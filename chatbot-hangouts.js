@@ -21,24 +21,18 @@ var cancelParticipantsListSelector = ".UhDpP.cmX6We.TTnd8c.ny1kd.z-b-G";
 
 var restaurants = {
     "friday" : [
-        "Aux Petites Côtes",
-        "À la Maison Commune",
-        "À Luzzi Pizza",
-        "À la Petite Belgique",
-        "Au Bistrot de Tressin",
-        "Chez Manu"
+        "Au Rivoli"
     ],
     "others" : [
-        "Au Flunch",
-        "À Pizza Paï",
-        "Au KFC",
-        "Au bowling Van Gogh",
-        "Au Quick",
-        "Au MacDo",
-        "À Subway",
-        "À SoGood",
-        "À Pomme de Pain",
-        "On mange pas."
+        "Au Rivoli",
+        "Au Lustelle",
+        "À l'hotel de France, ils ont des lits mais ils font aussi a bouffer les cons.",
+        "À la Grandre Brasserie de l'Impératr.... putain ça me fait chier de tout écrire",
+        "Au Toscana, même pas en rêve y a pas de bières",
+        "Au JB's Pub mais faut réserver avant 11H !",
+        "Ici mais on va chercher un sandwich toytoy",
+        "Ici mais des gamelles donc si vous en avez pas, allez pourrir !",
+	    "On mange pas."
     ]
 };
 
