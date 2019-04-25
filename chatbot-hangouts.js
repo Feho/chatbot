@@ -511,7 +511,7 @@ Bot.prototype = {
                 "Et ta soeur ?",
                 "Tu suces ?",
                 "J'hésites",
-		        "Zbradaraldjan",
+		"Zbradaraldjan",
 		        "C'est pas faux"
             ];
 
