@@ -76,7 +76,6 @@ Bot.prototype = {
             this.whoIs.bind(this),
             this.whereDoWeEat.bind(this),
             this.thisOrThat.bind(this),
-            //this.estCeQueCEstBientot.bind(this),
             this.taunt.bind(this),
             this.discuss.bind(this),
             this.answerYesNo.bind(this),
@@ -365,7 +364,7 @@ Bot.prototype = {
     movie: function(message)
     {
         var that = this;
-        var pattern = /qu(-| )est(-| )ce qu'?on mate ce soir ?\?/i
+        var pattern = /y a quoi (a|à) la t(é|e)loche ?\?/i
         var matches = message.match(pattern);
 
         if (matches != null)
@@ -431,14 +430,35 @@ Bot.prototype = {
     {
         var that = this;
 
-        if (sender.toLowerCase() == "mickaël" && message.toLowerCase().indexOf("flemme") !== -1)
+        if (sender.toLowerCase() == "mykeul" && message.toLowerCase().indexOf("flemme") !== -1)
         {
             var answer = "t'es un branleur";
             that.sendMessage(answer);
             cacheMessage(answer);
         }
-    },
 
+        if (message.toLowerCase().indexOf("miguel") !== -1)
+        {
+            var answer = "qu'il aille pourrir celui là";
+            that.sendMessage(answer);
+            cacheMessage(answer);
+        }
+
+        if (sender.toLowerCase() == "Rémi" && message.toLowerCase().indexOf("dindon") !== -1)
+        {
+            var answer = "Termine tes PRs toi !";
+            that.sendMessage(answer);
+            cacheMessage(answer);
+        }
+
+        if (sender.toLowerCase() == "Julien" && message.toLowerCase().indexOf("café") !== -1)
+        {
+            var answer = "Tu cherches une excuse pour regarder PP de dos gros dégoutant !";
+            that.sendMessage(answer);
+            cacheMessage(answer);
+        }
+    },
+        
     /**
      * Répond à une question du style "Où est ... ?"
      */
