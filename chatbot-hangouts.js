@@ -494,7 +494,7 @@ Bot.prototype = {
                 "Euh non",
                 "Je sais pas ^^",
                 "Probablement",
-                "Absoluement",
+                "Absolument",
                 "J'crois pas non",
                 "Évidemment",
                 "Probablement pas",
