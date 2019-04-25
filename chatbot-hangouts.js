@@ -868,7 +868,7 @@ var bot = new Bot({
     repetitionProbability: 1,
     discuss: true,
     // Probabilité en % de réponse aux messages.
-    discussionProbability: 10,
+    discussionProbability: 30,
     proposeSuggestions: false,
     autoPostMessageAfterInactivity: 43200
 });
