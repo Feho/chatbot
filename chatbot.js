@@ -37,18 +37,18 @@ var lastMessage = jQuery(messagesSelector).last().text();
 
 var restaurants = {
     "friday" : [
-        "Au Rivoli"
+        "Au Rivoli, on y va pour le cassoulet et les tripes"
     ],
     "others" : [
-        "Au Rivoli",
-        "Au Lustelle",
-        "À l'hotel de France, ils ont des lits mais ils font aussi a bouffer les cons.",
+        "Au Rivoli, on y va pour le cassoulet et les tripes",
+        "Au Lustelle, ils font des pizzas mais pas que",
+        "À l'hotel de France, ils ont des lits mais ils font aussi a bouffer les cons",
         "À la Grandre Brasserie de l'Impératr.... putain ça me fait chier de tout écrire",
         "Au Toscana, même pas en rêve y a pas de bières",
         "Au JB's Pub mais faut réserver avant 11H !",
         "Ici mais on va chercher un sandwich toytoy",
         "Ici mais des gamelles donc si vous en avez pas, allez pourrir !",
-	"On mange pas."
+	    "On mange pas."
     ]
 };
 
@@ -386,7 +386,7 @@ Bot.prototype = {
     meteo: function(message)
     {
         var that = this;
-        var pattern = /il fait quel temps*\?/i
+        var pattern = /(il fait quel temps|quel temps fait(-| )il) ?\?/i
         var matches = message.match(pattern);
 
         if (matches != null)
@@ -401,7 +401,7 @@ Bot.prototype = {
     movie: function(message)
     {
         var that = this;
-        var pattern = /qu-?est-?ce qu'?on mate ce soir*\?/i
+        var pattern = /qu(-| )est(-| )ce qu'?on mate ce soir ?\?/i
         var matches = message.match(pattern);
 
         if (matches != null)
@@ -547,8 +547,8 @@ Bot.prototype = {
                 "Et ta soeur ?",
                 "Tu suces ?",
                 "J'hésites",
-		"Zbradaraldjan",
-		"C'est pas faux"
+		        "Zbradaraldjan",
+		        "C'est pas faux"
             ];
 
             var random = getRandomInt(0, answers.length - 1);

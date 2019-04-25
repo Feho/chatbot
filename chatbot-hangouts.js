@@ -21,12 +21,12 @@ var cancelParticipantsListSelector = ".UhDpP.cmX6We.TTnd8c.ny1kd.z-b-G";
 
 var restaurants = {
     "friday" : [
-        "Au Rivoli"
+        "Au Rivoli, on y va pour le cassoulet et les tripes"
     ],
     "others" : [
-        "Au Rivoli",
-        "Au Lustelle",
-        "À l'hotel de France, ils ont des lits mais ils font aussi a bouffer les cons.",
+        "Au Rivoli, on y va pour le cassoulet et les tripes",
+        "Au Lustelle, ils font des pizzas mais pas que",
+        "À l'hotel de France, ils ont des lits mais ils font aussi a bouffer les cons",
         "À la Grandre Brasserie de l'Impératr.... putain ça me fait chier de tout écrire",
         "Au Toscana, même pas en rêve y a pas de bières",
         "Au JB's Pub mais faut réserver avant 11H !",
@@ -81,6 +81,9 @@ Bot.prototype = {
             this.discuss.bind(this),
             this.answerYesNo.bind(this),
             this.search.bind(this),
+            this.meteo.bind(this),
+            this.movie.bind(this),
+            this.whereIs.bind(this),
             this.repeatLastWord.bind(this)
         ]
 
@@ -342,6 +345,36 @@ Bot.prototype = {
     },
 
     /**
+     * Renvoie la météo.
+     */
+    meteo: function(message)
+    {
+        var that = this;
+        var pattern = /(il fait quel temps|quel temps fait(-| )il) ?\?/i
+        var matches = message.match(pattern);
+
+        if (matches != null)
+        {
+           that.sendMessage("http://www.meteofrance.com/previsions-meteo-france/lille/59000")
+        }
+    },
+	
+    /**
+     * Renvoie un film.
+     */
+    movie: function(message)
+    {
+        var that = this;
+        var pattern = /qu(-| )est(-| )ce qu'?on mate ce soir ?\?/i
+        var matches = message.match(pattern);
+
+        if (matches != null)
+        {
+           that.sendMessage("https://reelgood.com/roulette/netflix")
+        }
+    },
+
+    /**
      * Répond à une question du style "C'est qui le... ?" par le nom d'un participant aléatoire.
      */
     whoIs: function(message)
@@ -407,6 +440,32 @@ Bot.prototype = {
     },
 
     /**
+     * Répond à une question du style "Où est ... ?"
+     */
+    whereIs: function(message)
+    {
+        var that = this;
+        var pattern = /o(u|ù) est/i
+        var regex = new RegExp(pattern);
+
+        if (regex.test(message))
+        {
+            var answers = [
+                "dans ton cul",
+                "à la piscine",
+                "chez ta mère",
+                "chez les cons",
+                "à la mer, y fait soleil",
+                "caché"
+            ];
+
+            var random = getRandomInt(0, answers.length - 1);
+            that.sendMessage(answers[random]);
+            cacheMessage(answers[random]);
+        }
+    },
+
+    /**
      * Répond à une question du style "Est-ce que ... ? / Veux-tu ... ?/ Es-tu sûr ?" par une réponse positive ou négative.
      */
     answerYesNo: function(message)
@@ -421,8 +480,6 @@ Bot.prototype = {
                 "Oui",
                 "Oui",
                 "Oui",
-                "Oui",
-                "Non",
                 "Non",
                 "Non",
                 "Non",
@@ -437,7 +494,7 @@ Bot.prototype = {
                 "Euh non",
                 "Je sais pas ^^",
                 "Probablement",
-		"Absolument",
+                "Absoluement",
                 "J'crois pas non",
                 "Évidemment",
                 "Probablement pas",
@@ -446,8 +503,6 @@ Bot.prototype = {
                 "Ouais",
                 "Ouais",
                 "Ouais",
-                "Ouais",
-                "Nan",
                 "Nan",
                 "Nan",
                 "Nan",
@@ -455,7 +510,9 @@ Bot.prototype = {
                 "No",
                 "Et ta soeur ?",
                 "Tu suces ?",
-                "J'hésites"
+                "J'hésites",
+		        "Zbradaraldjan",
+		        "C'est pas faux"
             ];
 
             var random = getRandomInt(0, answers.length - 1);
