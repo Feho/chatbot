@@ -412,7 +412,7 @@ Bot.prototype = {
     answerYesNo: function(message)
     {
         var that = this;
-        var pattern = /est(-| )ce qu|veux(-| )tu|Es(-| )tu sûr/i
+        var pattern = /est(-| )ce qu|veux(-| )tu|es(-| )tu/i
         var regex = new RegExp(pattern);
 
         if (regex.test(message))
