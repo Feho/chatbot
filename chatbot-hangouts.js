@@ -512,7 +512,7 @@ Bot.prototype = {
                 "Tu suces ?",
                 "J'hésites",
 		"Zbradaraldjan",
-		        "C'est pas faux"
+		"C'est pas faux"
             ];
 
             var random = getRandomInt(0, answers.length - 1);
