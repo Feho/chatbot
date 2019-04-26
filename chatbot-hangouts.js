@@ -444,14 +444,14 @@ Bot.prototype = {
             cacheMessage(answer);
         }
 
-        if (sender.toLowerCase() == "Rémi" && message.toLowerCase().indexOf("dindon") !== -1)
+        if (sender.toLowerCase() == "rémi" && message.toLowerCase().indexOf("dindon") !== -1)
         {
             var answer = "Termine tes PRs toi !";
             that.sendMessage(answer);
             cacheMessage(answer);
         }
 
-        if (sender.toLowerCase() == "Julien" && message.toLowerCase().indexOf("café") !== -1)
+        if (sender.toLowerCase() == "julien" && message.toLowerCase().indexOf("café") !== -1)
         {
             var answer = "Tu cherches une excuse pour regarder PP de dos gros dégoutant !";
             that.sendMessage(answer);
