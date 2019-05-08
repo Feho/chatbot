@@ -574,7 +574,7 @@ Bot.prototype = {
         var canSpeak = (that.options.discuss
             && getLastMessageElement().closest('.pj') == null
             && (random <= that.options.discussionProbability || message.indexOf("@bot ") === 0
-                || message.indexOf("@dindon ") === 0))
+                || message.indexOf("dindon") !== -1))
 
         if (!canSpeak)
         {
@@ -630,7 +630,7 @@ Bot.prototype = {
         random = getRandomInt(1, 3)
 
         if (answersIndexes.length === 0 && (random == 1 || message.indexOf("@bot ") === 0
-            || message.indexOf("@dindon ") === 0))
+            || message.indexOf("dindon") !== -1))
         {
             // Aucune réponse trouvée, recherche d'une réponse probable de temps en temps :)
             console.log("Recherche d'un message similaire...");
