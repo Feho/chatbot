@@ -401,7 +401,7 @@ Bot.prototype = {
     movie: function(message)
     {
         var that = this;
-        var pattern = /qu(-| )est(-| )ce qu'?on mate ce soir ?\?/i
+        var pattern = /y a quoi (a|à) la t(é|e)loche ?\?/i
         var matches = message.match(pattern);
 
         if (matches != null)
@@ -473,8 +473,29 @@ Bot.prototype = {
             that.sendMessage(answer);
             cacheMessage(answer);
         }
+
+        if (message.toLowerCase().indexOf("miguel") !== -1)
+        {
+            var answer = "qu'il aille pourrir celui là";
+            that.sendMessage(answer);
+            cacheMessage(answer);
+        }
+
+        if (sender.toLowerCase() == "Rémi" && message.toLowerCase().indexOf("dindon") !== -1)
+        {
+            var answer = "Termine tes PRs toi !";
+            that.sendMessage(answer);
+            cacheMessage(answer);
+        }
+
+        if (sender.toLowerCase() == "Julien" && message.toLowerCase().indexOf("café") !== -1)
+        {
+            var answer = "Tu cherches une excuse pour regarder PP de dos gros dégoutant !";
+            that.sendMessage(answer);
+            cacheMessage(answer);
+        }
     },
-	
+
     /**
      * Répond à une question du style "Où est ... ?"
      */
