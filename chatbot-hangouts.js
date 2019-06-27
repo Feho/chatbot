@@ -453,7 +453,7 @@ Bot.prototype = {
 
         if (sender.toLowerCase() == "julien" && message.toLowerCase().indexOf("café") !== -1)
         {
-            var answer = "Tu cherches une excuse pour regarder PP de dos gros dégoutant !";
+            var answer = "Tu cherches une excuse pour regarder PP de dos gros dégoûtant !";
             that.sendMessage(answer);
             cacheMessage(answer);
         }
